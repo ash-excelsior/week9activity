@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Task Manager</title>
+    <style>
+        /* CSS for modern and responsive design */
+        :root {
+            --primary-color: #4A90E2;
+            --primary-hover: #357ABD;
+            --background-light: #f4f7f9;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --border-radius: 6px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-light);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .task-manager-container {
+            width: 100%;
+            max-width: 550px;
+            padding: 25px;
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease-in-out;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        /* Task Input Form */
+        .task-input-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        #taskInput {
+            flex-grow: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+
+        #taskInput:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        #addTaskBtn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        #addTaskBtn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Task List Styling */
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s, opacity 0.3s;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            border-left: 5px solid #28a745;
+            background-color: #e9f5e9;
+        }
+
+        .task-content {
+            flex-grow: 1;
+            text-align: left;
+            word-wrap: break-word;
+            padding-right: 15px;
+            font-size: 1.1em;
+        }
+
+        .task-item.completed .task-content {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        /* Task Controls (Buttons) */
+        .task-controls button {
+            margin-left: 8px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .task-controls .complete-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .task-controls .complete-btn:hover { background-color: #1e7e34; }
+
+        .task-controls .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .task-controls .delete-btn:hover { background-color: #c82333; }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .task-manager-container {
+                padding: 20px 15px;
+            }
+
+            .task-input-form {
+                flex-direction: column;
+            }
+
+            #addTaskBtn {
+                width: 100%;
+            }
+
+            .task-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .task-content {
+                padding-right: 0;
+            }
+
+            .task-controls {
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .task-controls button {
+                flex-grow: 1;
+                margin-left: 0;
+            }
+            .task-controls .complete-btn { margin-right: 8px; }
+        }
+    </style>
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "tu7yoj77jk");
+</script>
+</head>
+<body>
+
+    <div class="task-manager-container">
+        <h1>✅ Simple To-Do List</h1>
+
+        <div class="task-input-form">
+            <input type="text" id="taskInput" placeholder="Enter a new task..." maxlength="100">
+            <button id="addTaskBtn">Add Task</button>
+        </div>
+
+        <ul id="taskList" class="task-list">
+            </ul>
+        
+    </div>
+
+    <script>
+        // JavaScript for interactivity
+        document.addEventListener('DOMContentLoaded', () => {
+            const taskInput = document.getElementById('taskInput');
+            const addTaskBtn = document.getElementById('addTaskBtn');
+            const taskList = document.getElementById('taskList');
+
+            // Load tasks from local storage on startup
+            loadTasks();
+
+            /**
+             * Creates and returns a new task item (<li> element).
+             * @param {string} text - The text content of the task.
+             * @param {boolean} isCompleted - The completion status of the task.
+             * @returns {HTMLLIElement} The newly created task item.
+             */
+            function createTaskElement(text, isCompleted = false) {
+                const listItem = document.createElement('li');
+                listItem.className = 'task-item';
+                if (isCompleted) {
+                    listItem.classList.add('completed');
+                }
+
+                // Task Content Span
+                const contentSpan = document.createElement('span');
+                contentSpan.className = 'task-content';
+                contentSpan.textContent = text;
+
+                // Controls Div
+                const controlsDiv = document.createElement('div');
+                controlsDiv.className = 'task-controls';
+
+                // Complete Button
+                const completeBtn = document.createElement('button');
+                completeBtn.className = 'complete-btn';
+                completeBtn.textContent = isCompleted ? 'Undo' : 'Complete';
+                completeBtn.addEventListener('click', () => {
+                    toggleTaskCompletion(listItem);
+                    saveTasks();
+                });
+
+                // Delete Button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.addEventListener('click', () => {
+                    listItem.remove();
+                    saveTasks();
+                });
+
+                controlsDiv.appendChild(completeBtn);
+                controlsDiv.appendChild(deleteBtn);
+
+                listItem.appendChild(contentSpan);
+                listItem.appendChild(controlsDiv);
+
+                return listItem;
+            }
+
+            /**
+             * Toggles the 'completed' class and the button text for a task item.
+             * @param {HTMLLIElement} taskItem - The <li> element of the task.
+             */
+            function toggleTaskCompletion(taskItem) {
+                taskItem.classList.toggle('completed');
+                const completeBtn = taskItem.querySelector('.complete-btn');
+                const isCompleted = taskItem.classList.contains('completed');
+                completeBtn.textContent = isCompleted ? 'Undo' : 'Complete';
+            }
+
+            /**
+             * Adds a new task to the list.
+             */
+            function addTask() {
+                const taskText = taskInput.value.trim();
+                
+                if (taskText === "") {
+                    alert("Please enter a task!");
+                    return;
+                }
+
+                const newTask = createTaskElement(taskText);
+                taskList.prepend(newTask); // Add new task to the top
+                taskInput.value = ''; // Clear input
+                saveTasks();
+            }
+
+            // Event Listeners
+            addTaskBtn.addEventListener('click', addTask);
+            
+            // Allow adding task by pressing Enter key
+            taskInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    addTask();
+                }
+            });
+
+            /**
+             * Saves the current tasks to local storage.
+             */
+            function saveTasks() {
+                const tasks = [];
+                taskList.querySelectorAll('.task-item').forEach(item => {
+                    tasks.push({
+                        text: item.querySelector('.task-content').textContent,
+                        completed: item.classList.contains('completed')
+                    });
+                });
+                localStorage.setItem('simpleTaskManagerTasks', JSON.stringify(tasks));
+            }
+
+            /**
+             * Loads tasks from local storage and renders them.
+             */
+            function loadTasks() {
+                const storedTasks = localStorage.getItem('simpleTaskManagerTasks');
+                if (storedTasks) {
+                    const tasks = JSON.parse(storedTasks);
+                    tasks.forEach(task => {
+                        const taskElement = createTaskElement(task.text, task.completed);
+                        // Append tasks to maintain order from storage (oldest at bottom)
+                        // If you prefer completed tasks at the bottom, you can sort here before appending.
+                        taskList.appendChild(taskElement); 
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
